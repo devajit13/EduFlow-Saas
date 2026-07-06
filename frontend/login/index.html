@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EduFlow Login</title>
+<style>
+body{font-family:Arial;background:#eef4ff;display:flex;justify-content:center;align-items:center;height:100vh}
+.card{background:#fff;padding:30px;border-radius:12px;width:340px;box-shadow:0 8px 20px rgba(0,0,0,.1)}
+input,button{width:100%;padding:12px;margin-top:12px}
+button{background:#2563eb;color:#fff;border:0}
+</style></head>
+<body>
+<div class="card">
+<h2>EduFlow Login</h2>
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+<p id="msg"></p>
+</div>
+<script>
+async function login(){
+ document.getElementById('msg').textContent="Frontend only. Backend API will be connected next.";
+}
+</script>
+</body></html>
