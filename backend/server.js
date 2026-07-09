@@ -2,36 +2,78 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 
-const pool = require("./config/db");
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 
-const authRoutes = require("./routes/authRoutes");
+const authRoutes = require("./routes/auth");
 
 const app = express();
 
+// ================================
+// Middlewares
+// ================================
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/auth", authRoutes);
+// ================================
+// Debug Middleware
+// ================================
+app.use((req, res, next) => {
+  console.log("========== REQUEST ==========");
+  console.log("Method:", req.method);
+  console.log("URL:", req.url);
+  console.log("Headers:", req.headers["content-type"]);
+  console.log("Body:", req.body);
+  console.log("=============================");
+  next();
+});
 
-app.get("/", async (req, res) => {
+// ================================
+// Home Route
+// ================================
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "EduFlow Backend Running",
+  });
+});
+
+// ================================
+// Debug Route
+// ================================
+app.get("/debug", async (req, res) => {
   try {
-    const result = await pool.query("SELECT NOW()");
+    const schools = await prisma.school.findMany();
+    const users = await prisma.user.findMany();
+
     res.json({
       success: true,
-      message: "EduFlow API is running 🚀",
-      databaseTime: result.rows[0].now,
+      databaseUrl: process.env.DATABASE_URL,
+      totalSchools: schools.length,
+      totalUsers: users.length,
+      schools,
+      users,
     });
   } catch (error) {
     console.error(error);
+
     res.status(500).json({
       success: false,
-      message: "Database connection failed",
+      message: error.message,
     });
   }
 });
 
+// ================================
+// Authentication Routes
+// ================================
+app.use("/api/auth", authRoutes);
+
+// ================================
+// Start Server
+// ================================
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });

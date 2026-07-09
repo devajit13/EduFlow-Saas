@@ -14,8 +14,7 @@ model School {
   phone     String?
   address   String?
   createdAt DateTime @default(now())
-
-  users User[]
+  users     User[]
 }
 
 model User {
@@ -25,7 +24,6 @@ model User {
   password  String
   role      String
   createdAt DateTime @default(now())
-
-  schoolId String
-  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  schoolId  String
+  school    School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
 }
