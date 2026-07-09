@@ -1,46 +1,48 @@
-const express = require("express");
-const cors = require("cors");
 require("dotenv").config();
 
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+const express = require("express");
+const cors = require("cors");
+
+const { prisma } = require("./services/authService");
 
 const authRoutes = require("./routes/auth");
+const adminRoutes = require("./routes/admin");
 
 const app = express();
 
-// ================================
+// ======================================
 // Middlewares
-// ================================
+// ======================================
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// ================================
-// Debug Middleware
-// ================================
+// ======================================
+// Request Logger
+// ======================================
 app.use((req, res, next) => {
   console.log("========== REQUEST ==========");
   console.log("Method:", req.method);
-  console.log("URL:", req.url);
+  console.log("URL:", req.originalUrl);
   console.log("Headers:", req.headers["content-type"]);
   console.log("Body:", req.body);
   console.log("=============================");
   next();
 });
 
-// ================================
+// ======================================
 // Home Route
-// ================================
+// ======================================
 app.get("/", (req, res) => {
   res.json({
     success: true,
-    message: "EduFlow Backend Running",
+    message: "EduFlow Backend Running 🚀",
   });
 });
 
-// ================================
+// ======================================
 // Debug Route
-// ================================
+// ======================================
 app.get("/debug", async (req, res) => {
   try {
     const schools = await prisma.school.findMany();
@@ -48,7 +50,6 @@ app.get("/debug", async (req, res) => {
 
     res.json({
       success: true,
-      databaseUrl: process.env.DATABASE_URL,
       totalSchools: schools.length,
       totalUsers: users.length,
       schools,
@@ -64,14 +65,15 @@ app.get("/debug", async (req, res) => {
   }
 });
 
-// ================================
-// Authentication Routes
-// ================================
+// ======================================
+// Routes
+// ======================================
 app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes);
 
-// ================================
-// Start Server
-// ================================
+// ======================================
+// Server
+// ======================================
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

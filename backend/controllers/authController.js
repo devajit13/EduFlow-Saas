@@ -19,16 +19,15 @@ async function register(req, res) {
   try {
     console.log("========== REGISTER START ==========");
 
-    // 1. Request Body
     console.log("1. Request Body:");
     console.log(req.body);
 
-    // 2. Validate
     const data = registerSchema.parse(req.body);
+
     console.log("2. Validation Passed");
 
-    // 3. Existing User Check
     const existingUser = await findUserByEmail(data.email);
+
     console.log("3. Existing User Checked");
 
     if (existingUser) {
@@ -38,7 +37,6 @@ async function register(req, res) {
       });
     }
 
-    // 4. Create School
     console.log("4. Creating School...");
 
     const school = await createSchool({
@@ -51,14 +49,12 @@ async function register(req, res) {
     console.log("5. School Created");
     console.log(school);
 
-    // 5. Hash Password
     console.log("6. Hashing Password...");
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
     console.log("7. Password Hashed");
 
-    // 6. Create User
     console.log("8. Creating User...");
 
     const user = await createUser({
@@ -83,7 +79,6 @@ async function register(req, res) {
         role: user.role,
       },
     });
-
   } catch (error) {
     console.error("========== REGISTER ERROR ==========");
     console.error(error);
@@ -126,10 +121,12 @@ async function login(req, res) {
       });
     }
 
+    // Generate JWT Token
     const token = jwt.sign(
       {
         id: user.id,
         role: user.role,
+        schoolId: user.schoolId,
       },
       process.env.JWT_SECRET,
       {
@@ -146,9 +143,9 @@ async function login(req, res) {
         name: user.name,
         email: user.email,
         role: user.role,
+        schoolId: user.schoolId,
       },
     });
-
   } catch (error) {
     console.error("========== LOGIN ERROR ==========");
     console.error(error);
