@@ -7,6 +7,7 @@ const { prisma } = require("./services/authService");
 
 const authRoutes = require("./routes/auth");
 const adminRoutes = require("./routes/admin");
+const studentRoutes = require("./routes/studentRoutes");
 
 const app = express();
 
@@ -47,13 +48,16 @@ app.get("/debug", async (req, res) => {
   try {
     const schools = await prisma.school.findMany();
     const users = await prisma.user.findMany();
+    const students = await prisma.student.findMany();
 
     res.json({
       success: true,
       totalSchools: schools.length,
       totalUsers: users.length,
+      totalStudents: students.length,
       schools,
       users,
+      students,
     });
   } catch (error) {
     console.error(error);
@@ -66,10 +70,11 @@ app.get("/debug", async (req, res) => {
 });
 
 // ======================================
-// Routes
+// API Routes
 // ======================================
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/students", studentRoutes);
 
 // ======================================
 // Server
