@@ -6,7 +6,6 @@ function Dashboard() {
   return (
     <DashboardLayout>
       <StatsCards />
-
       <RecentStudents />
     </DashboardLayout>
   );

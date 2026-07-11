@@ -10,18 +10,16 @@ function StatCard({
     <Card>
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-slate-500 text-sm">
+          <p className="text-slate-500 text-sm font-medium">
             {title}
           </p>
 
-          <h2 className="text-3xl font-bold mt-2">
+          <h2 className="text-3xl font-bold mt-2 text-slate-800">
             {value}
           </h2>
         </div>
 
-        <div
-          className={`text-4xl ${color}`}
-        >
+        <div className={`text-4xl ${color}`}>
           {icon}
         </div>
       </div>
